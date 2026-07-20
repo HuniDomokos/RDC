@@ -15,7 +15,8 @@ void error(const char *msg) {
 }
 
 int main(int argc, char * argv[]){
-    signal(SIGCHLD, SIG_IGN); // Ignore child process termination signals to prevent zombie processes
+    signal(SIGCHLD, SIG_IGN);
+    signal(SIGPIPE, SIG_IGN);
     if (argc != 2) {
         error("Port number not provided. Program terminated.\n");
     }       
@@ -67,6 +68,10 @@ int main(int argc, char * argv[]){
                 n = read(newsockfd, buffer, BUFFER_SIZE - 1);
                 if (n < 0) 
                     error("Error reading from socket");
+                if (n ==0){
+                    fprintf(stdout, "Client disconnected\n");
+                    break;
+                }
                 int num1 = atoi(buffer);
                 fprintf(stdout, "Received first number: %d\n", num1);
 
@@ -77,6 +82,10 @@ int main(int argc, char * argv[]){
                 n = read(newsockfd, buffer, BUFFER_SIZE - 1);
                 if (n < 0)
                     error("Error reading from socket");
+                if (n ==0){
+                    fprintf(stdout, "Client disconnected\n");
+                    break;
+                }
                 int num2 = atoi(buffer);
                 fprintf(stdout, "Received second number: %d\n", num2);
 
@@ -88,6 +97,10 @@ int main(int argc, char * argv[]){
                 n = read(newsockfd, buffer, BUFFER_SIZE - 1);
                 if (n < 0)
                     error("Error reading from socket");
+                if (n ==0){
+                    fprintf(stdout, "Client disconnected\n");
+                    break;
+                }
                 fprintf(stdout, "Received operation: %c\n", buffer[0]);
                 switch (buffer[0]) {
                     case '+':
